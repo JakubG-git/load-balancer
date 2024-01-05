@@ -1,0 +1,58 @@
+version: '3.9'
+
+volumes:
+  postgres_data0:
+    driver: local
+  postgres_data1:
+    driver: local
+  postgres_data2:
+    driver: local
+  postgres_data3:
+    driver: local
+
+
+services:
+  db0:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data0:/var/lib/postgresql/data
+      - ./init:/init
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+  db1:
+    image: postgres:14-alpine
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres_data1:/var/lib/postgresql/data
+      - ./init:/init
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+  db2:
+    image: postgres:14-alpine
+    ports:
+      - 5434:5432
+    volumes:
+      - postgres_data2:/var/lib/postgresql/data
+      - ./init:/init
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+  db3:
+    image: postgres:14-alpine
+    ports:
+      - 5435:5432
+    volumes:
+      - postgres_data3:/var/lib/postgresql/data
+      - ./init:/init
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
