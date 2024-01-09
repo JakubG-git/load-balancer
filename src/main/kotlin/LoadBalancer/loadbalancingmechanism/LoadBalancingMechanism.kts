@@ -1,6 +1,6 @@
-package loadbalancer.loadbalancingmechanism
+package Loadbalancer.loadbalancingmechanism
 
-import loadbalancer.session.LoadBalancingSession
+import Loadbalancer.session.LoadBalancingSession
 
 interface LoadBalancingMechanism<T> {
     @Throws(IllegalStateException::class)
