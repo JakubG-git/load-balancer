@@ -1,6 +1,6 @@
-package Loadbalancer.loadbalancingmechanism
+package LoadBalancer.loadBalancingMechanism
 
-import Loadbalancer.session.LoadBalancingSession
+import LoadBalancer.Session.LoadBalancingSession
 
 class WeightedResponseTime<T> : LoadBalancingMechanism<T> {
 

@@ -11,7 +11,7 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
     LoadBalancingInterceptor<Session?>(loadBalancer),
     Interceptor {
     @Throws(CallbackException::class)
-    fun onSave(
+    override fun onSave(
         entity: Any?,
         id: Any?,
         state: Array<Any?>?,
@@ -27,7 +27,7 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
     }
 
     @Throws(CallbackException::class)
-    fun onDelete(entity: Any?, id: Any?, state: Array<Any?>?, propertyNames: Array<String?>?, types: Array<Type?>?) {
+    override fun onDelete(entity: Any?, id: Any?, state: Array<Any?>?, propertyNames: Array<String?>?, types: Array<Type?>?) {
         try {
             interceptOnDelete(entity)
         } catch (exception: IllegalStateException) {
@@ -36,7 +36,7 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
     }
 
     @Throws(CallbackException::class)
-    fun onFlushDirty(
+    override fun onFlushDirty(
         entity: Any?,
         id: Any?,
         currentState: Array<Any?>?,

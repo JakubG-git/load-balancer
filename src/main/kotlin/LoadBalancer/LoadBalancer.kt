@@ -1,4 +1,4 @@
 package LoadBalancer
 
-abstract class LoadBalancer {
+abstract class LoadBalancer<T> {
 }

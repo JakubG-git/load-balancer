@@ -1,7 +1,7 @@
 package LoadBalancer.Session
 
 import LoadBalancer.dbrequest.DbRequest
-import logging.LoggerDB
+import LoggerDB.LoggerDB
 import java.util.LinkedList
 
 abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
@@ -12,7 +12,7 @@ abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
 
     private val connectionName: String
     private var isPrimaryConnection: Boolean
-    private var status: Status
+    var status: Status
     private val queue: LinkedList<DbRequest>
     protected val thread: SessionMonitorThread<T>
     protected var logging: Boolean
