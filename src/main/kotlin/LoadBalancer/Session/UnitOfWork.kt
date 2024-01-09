@@ -8,4 +8,5 @@ interface UnitOfWork {
 
     @Throws(IllegalStateException::class)
     fun commit()
+
 }

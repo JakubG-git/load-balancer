@@ -1,6 +1,6 @@
-package Loadbalancer.loadbalancingmechanism
+package LoadBalancer.loadBalancingMechanism
 
-import Loadbalancer.session.LoadBalancingSession
+import LoadBalancer.Session.LoadBalancingSession
 import java.util.Random
 
 class RandConnection<T> : LoadBalancingMechanism<T> {
@@ -14,7 +14,7 @@ class RandConnection<T> : LoadBalancingMechanism<T> {
         var attempt = ATTEMPTS_BEFORE_EXCEPTION
         do {
             val session = loadBalancingSessions[RANDOM.nextInt(loadBalancingSessions.size)]
-            if (session.status == LoadBalancingSession.Status.UP && session.isHealthy) {
+            if (session.status == LoadBalancingSession.Status.UP && session.isHealthy()) {
                 return session
             }
         } while (attempt-- > 0)

@@ -1,6 +1,6 @@
-package Loadbalancer.loadbalancingmechanism
+package LoadBalancer.loadBalancingMechanism
 
-import Loadbalancer.session.LoadBalancingSession
+import LoadBalancer.Session.LoadBalancingSession
 
 class RoundRobin<T> : LoadBalancingMechanism<T> {
 
@@ -10,7 +10,7 @@ class RoundRobin<T> : LoadBalancingMechanism<T> {
         if (++index >= sessions.size) index = 0
         for (i in sessions.indices) {
             val session = sessions[index]
-            if (session.status == LoadBalancingSession.Status.UP && session.isHealthy) {
+            if (session.status == LoadBalancingSession.Status.UP && session.isHealthy()) {
                 return session
             }
             if (++index >= sessions.size) index = 0

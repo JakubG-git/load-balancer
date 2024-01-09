@@ -1,4 +1,4 @@
-package logging
+package LoggerDB
 
 import java.util.*
 import java.util.logging.ConsoleHandler
