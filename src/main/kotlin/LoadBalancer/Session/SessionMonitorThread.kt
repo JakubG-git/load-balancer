@@ -1,12 +1,13 @@
 package LoadBalancer.Session
 
-import LoadBalancer.Session.LoadBalancingSession
-import logging.DBLogger
+import logging.LoggerDB
+import java.util.logging.Logger
 
 class SessionMonitorThread<T>(private val session: LoadBalancingSession<T>, private val delayMs: Long) : Thread(),
     Monitor<LoadBalancingSession<T>?> {
     private var running = false
     var isLogging = false
+    private val logger: Logger? = LoggerDB.getLogger(SessionMonitorThread::class.java)
 
     fun disable() {
         running = false
@@ -31,8 +32,7 @@ class SessionMonitorThread<T>(private val session: LoadBalancingSession<T>, priv
                 if (session.getStatus() === LoadBalancingSession.Status.DOWN) session.commit()
                 session.setStatus(LoadBalancingSession.Status.UP)
             } else {
-                if (isLogging) DBLogger.getLogger(javaClass)
-                    .info("[SESSION '" + session.getConnectionName() + "']" + " Not healthy. Fix attempt")
+                if (isLogging) logger?.info("[SESSION '${session.getConnectionName()}'] Not healthy. Fix attempt")
                 session.setStatus(LoadBalancingSession.Status.DOWN)
                 session.fix()
             }

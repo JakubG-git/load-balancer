@@ -7,7 +7,7 @@ import LoadBalancer.Session.LoadBalancingSession
 import loadbalancer.dbrequest.DbRequest
 import loadbalancer.loadbalancingmechanism.LoadBalancingMechanism
 import loadbalancer.loadbalancingmechanism.RoundRobin
-import logging.DBLogger
+import logging.LoggerDB
 import org.hibernate.Session
 
 class HibernateLoadBalancer @JvmOverloads constructor(
@@ -43,7 +43,7 @@ class HibernateLoadBalancer @JvmOverloads constructor(
 
         // verify load balancer state
         if (sessions.isEmpty()) throw Exception("No valid session detected")
-        if (logging) DBLogger.getLogger(javaClass)
+        if (logging) LoggerDB.getLogger(javaClass)
             .info(("[HIBERNATE LOAD BALANCER ROOT] Created load balancer with '" + sessions.size()).toString() + "' sessions.")
     }
 
@@ -66,7 +66,7 @@ class HibernateLoadBalancer @JvmOverloads constructor(
         primarySession = loadBalancingMechanism.get(sessions)
         primarySession!!.setPrimaryConnection(true)
         primarySession!!.getConnection().clear()
-        if (logging) DBLogger.getLogger(javaClass)
+        if (logging) LoggerDB.getLogger(javaClass)
             .info("[HIBERNATE LOAD BALANCER ROOT] Chosen session: '" + primarySession!!.getConnectionName() + "'")
         return primarySession!!.getConnection()
     }

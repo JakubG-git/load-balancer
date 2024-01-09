@@ -4,7 +4,7 @@ import Hibernate.Interceptor.HibernateLoadBalancingInterceptor
 import LoadBalancer.Session.LoadBalancingSession
 import jakarta.persistence.FlushModeType
 import loadbalancer.dbrequest.DbRequest
-import logging.DBLogger
+import logging.LoggerDB
 import org.hibernate.Session
 import org.hibernate.cfg.Configuration
 
@@ -24,7 +24,7 @@ class HibernateLoadBalancingSession(
         try {
             connect()
         } catch (exception: Exception) {
-            if (logging) DBLogger.getLogger(javaClass)
+            if (logging) LoggerDB.getLogger(javaClass)
                 .warning("[HIBERNATE SESSION '" + getConnectionName() + "'] Could not create connection. Details: " + exception.message)
         }
         thread.start()
@@ -44,11 +44,11 @@ class HibernateLoadBalancingSession(
             session!!.clear()
             null
         } catch (exception: UnsupportedOperationException) {
-            if (logging) DBLogger.getLogger(javaClass)
+            if (logging) LoggerDB.getLogger(javaClass)
                 .warning("[HIBERNATE SESSION '" + getConnectionName() + "'] " + exception.message)
             throw exception
         } catch (exception: Exception) {
-            if (logging) DBLogger.getLogger(javaClass)
+            if (logging) LoggerDB.getLogger(javaClass)
                 .warning("[HIBERNATE SESSION '" + getConnectionName() + "'] " + exception.message)
             setStatus(Status.DOWN)
             register(request)

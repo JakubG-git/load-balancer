@@ -1,9 +1,7 @@
 package LoadBalancer.Session
 
-import LoadBalancer.Session.SessionMonitorThread
-import LoadBalancer.Session.UnitOfWork
 import LoadBalancer.dbrequest.DbRequest
-import logging.DBLogger
+import logging.LoggerDB
 import java.util.LinkedList
 
 abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
@@ -64,14 +62,14 @@ abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
 
     override fun commit() {
         if (logging)
-            DBLogger.getLogger(javaClass).info("[SESSION '$connectionName'] Commit called with '${queue.size}' DBRequests")
+            LoggerDB.getLogger(javaClass).info("[SESSION '$connectionName'] Commit called with '${queue.size}' DBRequests")
         while (!queue.isEmpty()) {
             val request = queue.remove()
             try {
                 execute(request)
             } catch (exception: Exception) {
                 if (logging)
-                    DBLogger.getLogger(javaClass).warning("[SESSION '$connectionName'] ${exception.message}")
+                    LoggerDB.getLogger(javaClass).warning("[SESSION '$connectionName'] ${exception.message}")
                 queue.push(request)
                 throw IllegalStateException("Could not execute request. Details: ${exception.message}")
             }
