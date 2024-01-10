@@ -1,34 +1,19 @@
 package LoadBalancer.Interceptor
 
-
 import LoadBalancer.LoadBalancer
-import LoadBalancer.dbrequest.DbRequest
+import LoadBalancer.Request.Request
 
-
-abstract class LoadBalancingInterceptor<T>(loadBalancer: LoadBalancer<T>) {
-    protected val loadBalancer: LoadBalancer<T>
-
-    init {
-        this.loadBalancer = loadBalancer
+abstract class LoadBalancingInterceptor<T>(private val loadBalancer: LoadBalancer<T>) {
+    protected fun interceptOnSave(obj: Any?) {
+        loadBalancer.redirect(Request(obj, Request.Type.INSERT))
     }
-
-    @Throws(IllegalStateException::class)
-    protected fun interceptOnSave(`object`: Any?) {
-        loadBalancer.redirect(DbRequest(`object`, DbRequest.Type.INSERT))
+    protected fun interceptOnDelete(obj: Any?) {
+        loadBalancer.redirect(Request(obj, Request.Type.DELETE))
     }
-
-    @Throws(IllegalStateException::class)
-    protected fun interceptOnDelete(`object`: Any?) {
-        loadBalancer.redirect(DbRequest(`object`, DbRequest.Type.DELETE))
+    protected fun interceptOnUpdate(obj: Any?) {
+        loadBalancer.redirect(Request(obj, Request.Type.UPDATE))
     }
-
-    @Throws(IllegalStateException::class)
-    protected fun interceptOnUpdate(`object`: Any?) {
-        loadBalancer.redirect(DbRequest(`object`, DbRequest.Type.UPDATE))
-    }
-
-    @Throws(IllegalStateException::class)
-    protected fun interceptOnLoad(`object`: Any?): Any {
-        return loadBalancer.redirect(DbRequest(`object`, DbRequest.Type.SELECT))
+    protected fun interceptOnLoad(obj: Any?) {
+        loadBalancer.redirect(Request(obj, Request.Type.SELECT))
     }
 }
