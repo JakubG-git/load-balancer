@@ -1,6 +1,6 @@
-package LoadBalancer.Session
+package loadBalancer.session
 
-import LoadBalancer.Request.Request
+import loadBalancer.request.Request
 import java.util.logging.Logger
 
 abstract class LoadBalancingSession<T>(

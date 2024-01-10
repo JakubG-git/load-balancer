@@ -1,7 +1,7 @@
-package LoadBalancer.Interceptor
+package loadBalancer.interceptor
 
-import LoadBalancer.LoadBalancer
-import LoadBalancer.Request.Request
+import loadBalancer.LoadBalancer
+import loadBalancer.request.Request
 
 abstract class LoadBalancingInterceptor<T>(private val loadBalancer: LoadBalancer<T>) {
     protected fun interceptOnSave(obj: Any?) {

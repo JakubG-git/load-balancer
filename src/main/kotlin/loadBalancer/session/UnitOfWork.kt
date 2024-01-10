@@ -1,6 +1,6 @@
-package LoadBalancer.Session
+package loadBalancer.session
 
-import LoadBalancer.Request.Request
+import loadBalancer.request.Request
 
 interface UnitOfWork {
     @Throws(IllegalStateException::class)

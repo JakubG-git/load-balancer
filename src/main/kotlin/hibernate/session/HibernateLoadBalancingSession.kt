@@ -1,8 +1,8 @@
-package Hibernate.Session
+package hibernate.session
 
-import Hibernate.Interceptor.HibernateLoadBalancingInterceptor
-import LoadBalancer.Request.Request
-import LoadBalancer.Session.LoadBalancingSession
+import hibernate.interceptor.HibernateLoadBalancingInterceptor
+import loadBalancer.request.Request
+import loadBalancer.session.LoadBalancingSession
 import jakarta.persistence.FlushModeType
 import org.hibernate.Session
 import org.hibernate.cfg.Configuration

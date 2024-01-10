@@ -1,6 +1,6 @@
-package LoadBalancer.loadBalancingMechanism
+package loadBalancer.loadBalancingMechanism
 
-import LoadBalancer.Session.LoadBalancingSession
+import loadBalancer.session.LoadBalancingSession
 import java.util.Random
 
 class RandConnection<T> : LoadBalancingMechanism<T> {

@@ -1,6 +1,5 @@
-package LoadBalancer.Session
+package loadBalancer.session
 
-import LoadBalancer.Session.LoadBalancingSession
 import java.util.logging.Logger
 
 class SessionMonitorThread<T>(private val session: LoadBalancingSession<T>, private val delayMs: Long) : Thread(),

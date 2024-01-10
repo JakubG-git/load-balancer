@@ -1,7 +1,7 @@
-package Hibernate.Interceptor
+package hibernate.interceptor
 
-import LoadBalancer.Interceptor.LoadBalancingInterceptor
-import LoadBalancer.LoadBalancer
+import loadBalancer.interceptor.LoadBalancingInterceptor
+import loadBalancer.LoadBalancer
 import org.hibernate.CallbackException
 import org.hibernate.Interceptor
 import org.hibernate.Session

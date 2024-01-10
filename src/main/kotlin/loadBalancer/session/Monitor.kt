@@ -1,4 +1,4 @@
-package LoadBalancer.Session
+package loadBalancer.session
 
 interface Monitor<T> {
     @Throws(IllegalStateException::class)

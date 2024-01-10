@@ -1,11 +1,11 @@
-package Hibernate
+package hibernate
 
-import Hibernate.Interceptor.HibernateLoadBalancingInterceptor
-import Hibernate.Session.HibernateLoadBalancingSession
-import LoadBalancer.LoadBalancer
-import LoadBalancer.LoadBalancingMechanism.LoadBalancingMechanism
-import LoadBalancer.Request.Request
-import LoadBalancer.Session.LoadBalancingSession
+import hibernate.interceptor.HibernateLoadBalancingInterceptor
+import hibernate.session.HibernateLoadBalancingSession
+import loadBalancer.LoadBalancer
+import loadBalancer.loadBalancingMechanism.LoadBalancingMechanism
+import loadBalancer.request.Request
+import loadBalancer.session.LoadBalancingSession
 
 import org.hibernate.Session
 import java.util.logging.Logger

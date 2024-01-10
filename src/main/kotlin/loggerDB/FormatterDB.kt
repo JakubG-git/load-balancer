@@ -1,4 +1,4 @@
-package LoggerDB
+package loggerDB
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat

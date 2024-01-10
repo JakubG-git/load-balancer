@@ -1,8 +1,8 @@
-package LoadBalancer
+package loadBalancer
 
-import LoadBalancer.LoadBalancingMechanism.LoadBalancingMechanism
-import LoadBalancer.Request.Request
-import LoadBalancer.Session.LoadBalancingSession
+import loadBalancer.loadBalancingMechanism.LoadBalancingMechanism
+import loadBalancer.request.Request
+import loadBalancer.session.LoadBalancingSession
 import java.util.logging.Logger
 
 abstract class LoadBalancer<T>(

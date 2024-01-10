@@ -1,4 +1,4 @@
-package LoadBalancer.Request
+package loadBalancer.request
 
 class Request(val obj: Any?, val type: Type) {
     enum class Type {
