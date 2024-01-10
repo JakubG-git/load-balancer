@@ -7,16 +7,16 @@ import org.hibernate.Interceptor
 import org.hibernate.Session
 import org.hibernate.type.Type
 
-class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
-    LoadBalancingInterceptor<Session?>(loadBalancer),
+class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session>) :
+    LoadBalancingInterceptor<Session>(loadBalancer),
     Interceptor {
     @Throws(CallbackException::class)
-    fun onSave(
+    override fun onSave(
         entity: Any?,
         id: Any?,
-        state: Array<Any?>?,
-        propertyNames: Array<String?>?,
-        types: Array<Type?>?
+        state: Array<out Any>?,
+        propertyNames: Array<out String>?,
+        types: Array<out Type>?
     ): Boolean {
         return try {
             interceptOnSave(entity)
@@ -27,7 +27,12 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
     }
 
     @Throws(CallbackException::class)
-    fun onDelete(entity: Any?, id: Any?, state: Array<Any?>?, propertyNames: Array<String?>?, types: Array<Type?>?) {
+    override fun onDelete(
+        entity: Any?,
+        id: Any?,
+        state: Array<out Any>?,
+        propertyNames: Array<out String>?,
+        types: Array<out Type>?) {
         try {
             interceptOnDelete(entity)
         } catch (exception: IllegalStateException) {
@@ -36,13 +41,13 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session?>?) :
     }
 
     @Throws(CallbackException::class)
-    fun onFlushDirty(
+    override fun onFlushDirty(
         entity: Any?,
         id: Any?,
-        currentState: Array<Any?>?,
-        previousState: Array<Any?>?,
-        propertyNames: Array<String?>?,
-        types: Array<Type?>?
+        currentState: Array<out Any>?,
+        previousState: Array<out Any>?,
+        propertyNames: Array<out String>?,
+        types: Array<out Type>?
     ): Boolean {
         return try {
             interceptOnUpdate(entity)
