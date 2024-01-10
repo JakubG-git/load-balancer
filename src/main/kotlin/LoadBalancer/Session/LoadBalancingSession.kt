@@ -1,78 +1,52 @@
 package LoadBalancer.Session
 
-import LoadBalancer.Session.SessionMonitorThread
-import LoadBalancer.Session.UnitOfWork
-import LoadBalancer.dbrequest.DbRequest
-import logging.DBLogger
-import java.util.LinkedList
+import LoadBalancer.Request.Request
+import java.util.logging.Logger
 
-abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
+abstract class LoadBalancingSession<T>(
+    private val connectionName: String,
+    var isPrimaryConnection: Boolean,
+    delayMs: Long,
+    logging: Boolean
+) : UnitOfWork, AutoCloseable {
 
     enum class Status {
         UP, DOWN
     }
 
-    private val connectionName: String
-    private var isPrimaryConnection: Boolean
-    private var status: Status
-    private val queue: LinkedList<DbRequest>
-    protected val thread: SessionMonitorThread<T>
-    protected var logging: Boolean
+    var status: Status = Status.DOWN
+    private val queue: MutableList<Request> = mutableListOf()
+    var isLogging: Boolean = logging
+        set(value) {
+            field = value
+            thread.isLogging = value
+        }
+    protected val thread: SessionMonitorThread<T> = SessionMonitorThread(this, delayMs)
+    private val log: Logger = Logger.getLogger(this.javaClass.name)
 
-    constructor(connectionName: String, isPrimaryConnection: Boolean, delayMs: Long, logging: Boolean) {
-        this.connectionName = connectionName
-        this.isPrimaryConnection = isPrimaryConnection
-        this.status = Status.DOWN
-        this.queue = LinkedList()
-        this.thread = SessionMonitorThread(this, delayMs)
-        this.logging = logging
-        this.thread.setLogging(logging)
+    init {
+        this.thread.isLogging = logging
     }
 
     fun getConnectionName(): String {
         return connectionName
     }
 
-    fun isPrimaryConnection(): Boolean {
-        return isPrimaryConnection
-    }
-
-    fun setPrimaryConnection(primaryConnection: Boolean) {
-        isPrimaryConnection = primaryConnection
-    }
-
-    fun getStatus(): Status {
-        return status
-    }
-
-    fun setStatus(status: Status) {
-        this.status = status
-    }
-
-    fun isLogging(): Boolean {
-        return logging
-    }
-
-    fun setLogging(logging: Boolean) {
-        this.logging = logging
-        this.thread.setLogging(logging)
-    }
-
-    override fun register(value: DbRequest) {
+    override fun register(value: Request) {
         queue.add(value)
     }
 
     override fun commit() {
-        if (logging)
-            DBLogger.getLogger(javaClass).info("[SESSION '$connectionName'] Commit called with '${queue.size}' DBRequests")
-        while (!queue.isEmpty()) {
-            val request = queue.remove()
+        if (isLogging)
+            log.info("[SESSION '$connectionName'] Commit called with '${queue.size}' DBRequests")
+        while (queue.isNotEmpty()) {
+            val request = queue.removeFirst()
             try {
                 execute(request)
             } catch (exception: Exception) {
-                if (logging)
-                    DBLogger.getLogger(javaClass).warning("[SESSION '$connectionName'] ${exception.message}")
-                queue.push(request)
+                if (isLogging)
+                    log.warning("[SESSION '$connectionName'] ${exception.message}")
+                queue.add(request)
                 throw IllegalStateException("Could not execute request. Details: ${exception.message}")
             }
         }
@@ -85,7 +59,7 @@ abstract class LoadBalancingSession<T> : UnitOfWork, AutoCloseable {
 
     abstract fun getConnection(): T
 
-    abstract fun execute(request: DbRequest): Any
+    abstract fun execute(request: Request): Any?
 
     abstract fun isHealthy(): Boolean
 
