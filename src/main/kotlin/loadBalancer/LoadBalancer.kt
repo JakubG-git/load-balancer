@@ -6,7 +6,7 @@ import loadBalancer.session.LoadBalancingSession
 import java.util.logging.Logger
 
 abstract class LoadBalancer<T>(
-    protected var loadBalancingMechanism: LoadBalancingMechanism<T>,
+    var loadBalancingMechanism: LoadBalancingMechanism<T>,
     logging: Boolean) : AutoCloseable {
     protected val sessions: MutableList<LoadBalancingSession<T>> = mutableListOf()
     private val log: Logger = Logger.getLogger(this.javaClass.name)
