@@ -1,5 +1,3 @@
-package Model
-
 data class Client(
     var idClient: Int,
     var name: String,
