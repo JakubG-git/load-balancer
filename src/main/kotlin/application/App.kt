@@ -16,7 +16,12 @@ class App {
 
     fun run() {
         try {
-            val loadBalancer = HibernateLoadBalancer(listOf(), RoundRobin())
+            val loadBalancer = HibernateLoadBalancer(listOf(
+                "hibernate/database-psql-1.xml",
+                "hibernate/database-psql-2.xml",
+                "hibernate/database-psql-3.xml",
+                "hibernate/database-psql-4.xml",
+            ), RoundRobin())
             loadBalancer.use {
                 var running = true
                 var logging = true
@@ -64,6 +69,7 @@ class App {
                                 println("client: ")
                                 for (client in query.list())
                                     println(client)
+                                break
                             }
                             3 -> {
                                 print("Lower id: ")
