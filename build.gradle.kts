@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.0"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.9.22"
 }
 
 group = "pl.edu.agh.kis.dp"
@@ -19,5 +20,5 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
 }

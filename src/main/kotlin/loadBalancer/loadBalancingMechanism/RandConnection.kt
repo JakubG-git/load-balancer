@@ -10,10 +10,10 @@ class RandConnection<T> : LoadBalancingMechanism<T> {
         var ATTEMPTS_BEFORE_EXCEPTION = 10
     }
 
-    override fun get(loadBalancingSessions: List<LoadBalancingSession<T>>): LoadBalancingSession<T> {
+    override fun get(sessions: List<LoadBalancingSession<T>>): LoadBalancingSession<T> {
         var attempt = ATTEMPTS_BEFORE_EXCEPTION
         do {
-            val session = loadBalancingSessions[RANDOM.nextInt(loadBalancingSessions.size)]
+            val session = sessions[RANDOM.nextInt(sessions.size)]
             if (session.status == LoadBalancingSession.Status.UP && session.isHealthy()) {
                 return session
             }
