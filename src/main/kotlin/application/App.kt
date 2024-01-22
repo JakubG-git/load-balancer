@@ -38,7 +38,6 @@ class App {
                             "Toggle logging",
                             "Change load balancing algorithm"
                         )
-
                         when (option) {
                             0 -> running = false
                             1 -> {
@@ -69,7 +68,6 @@ class App {
                                 println("client: ")
                                 for (client in query.list())
                                     println(client)
-                                break
                             }
                             3 -> {
                                 print("Lower id: ")
