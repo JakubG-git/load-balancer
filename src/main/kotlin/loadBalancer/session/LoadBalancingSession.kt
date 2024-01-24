@@ -24,13 +24,17 @@ abstract class LoadBalancingSession<T>(
     protected val thread: SessionMonitorThread<T> = SessionMonitorThread(this, delayMs)
     private val log: Logger = Logger.getLogger(this.javaClass.name)
 
+    // Średni czas odpowiedzi sesji
+    private var averageResponseTime: Double = 0.0
+    private var responseTimeCount: Int = 0
+
     init {
         this.thread.isLogging = logging
     }
 
-    fun getConnectionName(): String {
-        return connectionName
-    }
+    fun getConnectionName(): String = connectionName
+
+    fun getAverageResponseTime(): Double = averageResponseTime
 
     override fun register(value: Request) {
         queue.add(value)
@@ -41,8 +45,11 @@ abstract class LoadBalancingSession<T>(
             log.info("[SESSION '$connectionName'] Commit called with '${queue.size}' DBRequests")
         while (queue.isNotEmpty()) {
             val request = queue.removeFirst()
+            val startTime = System.currentTimeMillis()
             try {
                 execute(request)
+                val endTime = System.currentTimeMillis()
+                updateAverageResponseTime(endTime - startTime)
             } catch (exception: Exception) {
                 if (isLogging)
                     log.warning("[SESSION '$connectionName'] ${exception.message}")
@@ -50,6 +57,11 @@ abstract class LoadBalancingSession<T>(
                 throw IllegalStateException("Could not execute request. Details: ${exception.message}")
             }
         }
+    }
+
+    private fun updateAverageResponseTime(responseTime: Long) {
+        averageResponseTime = ((averageResponseTime * responseTimeCount) + responseTime) / (responseTimeCount + 1)
+        responseTimeCount++
     }
 
     override fun close() {
