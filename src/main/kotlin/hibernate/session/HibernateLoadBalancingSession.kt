@@ -100,8 +100,10 @@ class HibernateLoadBalancingSession(
         interceptedSession.sessionFactory.close()
         interceptedSession.close()
         connect()
-        if (isHealthy())
+        if (isHealthy()){
             commit()
+        }
+
         else throw IllegalStateException("Could not fix the session")
         status = Status.UP
     }

@@ -41,6 +41,8 @@ class App {
                         when (option) {
                             0 -> running = false
                             1 -> {
+                                print("Client id: ")
+                                val id = scanner.nextLine().toLong()
                                 print("Client name: ")
                                 val name = scanner.nextLine()
                                 println("Contact info: ")
@@ -52,9 +54,8 @@ class App {
                                 val code = scanner.nextLine()
                                 print("Phone number: ")
                                 val phone = scanner.nextLine()
-
                                 val client = Client(name = name, street = street, town = town,
-                                    postalCode = code, phone = phone)
+                                    postalCode = code, phone = phone, id = id)
 
                                 addClient(it.connection(), client)
 
@@ -106,7 +107,7 @@ class App {
                                 if (code.isNotBlank())
                                     client.postalCode = code
 
-                                print("New username: ")
+                                print("New Phone: ")
                                 val phone = scanner.nextLine()
                                 if (phone.isNotBlank())
                                     client.phone = phone
