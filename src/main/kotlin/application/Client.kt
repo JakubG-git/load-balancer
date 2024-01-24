@@ -6,9 +6,9 @@ import jakarta.persistence.*
 @Table(name = "klienci")
 data class Client(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idklienta", unique = true, nullable = false)
-    val id: Long = 0,
+
+    @Column(name = "idklienta", unique = true)
+    val id: Long?=null,
 
     @Column(name = "nazwa", nullable = false)
     var name: String,
