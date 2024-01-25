@@ -55,13 +55,15 @@ class HibernateLoadBalancer(
         return result
     }
     override fun connection(): Session {
-        if (primarySession == null) {
-            primarySession = loadBalancingMechanism.get(sessions)
-            primarySession!!.isPrimaryConnection = true
-            if (isLogging)
-                log.info("[HIBERNATE LOAD BALANCER] Chosen session: '${primarySession!!.getConnectionName()}'")
-            return primarySession!!.getConnection()
-        }
+        if (primarySession != null)
+            primarySession!!.isPrimaryConnection = false
+
+        primarySession = loadBalancingMechanism.get(sessions)
+        primarySession!!.isPrimaryConnection = true
+        primarySession!!.getConnection().clear()
+        if (isLogging)
+            log.info("[HIBERNATE LOAD BALANCER] Chosen session: '${primarySession!!.getConnectionName()}'")
+
         return primarySession!!.getConnection()
     }
 

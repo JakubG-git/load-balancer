@@ -17,8 +17,8 @@ class HibernateLoadBalancingSession(
     logging: Boolean
 ) :
     LoadBalancingSession<Session>(sessionName!!, isPrimarySession, delayMs.toLong(), logging) {
-    private lateinit var interceptedSession: Session
-    private lateinit var session: Session
+    private var interceptedSession: Session? = null
+    private var session: Session? = null
     private val log: Logger = Logger.getLogger(this.javaClass.name)
 
     init {
@@ -37,16 +37,16 @@ class HibernateLoadBalancingSession(
     @Throws(Exception::class)
     override fun execute(request: Request): Any? {
         return try {
-            if (!session.transaction.isActive)
-                session.beginTransaction()
+            if (!session!!.transaction.isActive)
+                session!!.beginTransaction()
             when (request.type) {
-                Request.Type.INSERT -> session.persist(request.obj)
-                Request.Type.UPDATE -> session.merge(request.obj)
-                Request.Type.DELETE -> session.remove(request.obj)
+                Request.Type.INSERT -> session!!.persist(request.obj)
+                Request.Type.UPDATE -> session!!.merge(request.obj)
+                Request.Type.DELETE -> session!!.remove(request.obj)
                 else -> throw UnsupportedOperationException("Operation ${request.type} is not supported")
             }
-            session.transaction.commit()
-            session.clear()
+            session!!.transaction.commit()
+            session!!.clear()
             null
         } catch (exception: UnsupportedOperationException) {
             if (isLogging)
@@ -63,25 +63,25 @@ class HibernateLoadBalancingSession(
 
     override fun isHealthy(): Boolean {
         return try {
-            if (session.isOpen)
-                session.flushMode = FlushModeType.COMMIT
+            if (session!!.isOpen)
+                session!!.flushMode = FlushModeType.COMMIT
 
-            val resultFromSession = session.createNativeQuery(
+            val resultFromSession = session!!.createNativeQuery(
                 HEALTH_NATIVE_QUERY,
                 Int::class.java
             ).resultList
 
-            session.flushMode = FlushModeType.AUTO
+            session!!.flushMode = FlushModeType.AUTO
 
-            if (interceptedSession.isOpen)
-                interceptedSession.flushMode = FlushModeType.COMMIT
+            if (interceptedSession!!.isOpen)
+                interceptedSession!!.flushMode = FlushModeType.COMMIT
 
-            val resultFromInterceptedSession = interceptedSession.createNativeQuery(
+            val resultFromInterceptedSession = interceptedSession!!.createNativeQuery(
                 HEALTH_NATIVE_QUERY,
                 Int::class.java
             ).resultList
 
-            interceptedSession.flushMode = FlushModeType.AUTO
+            interceptedSession!!.flushMode = FlushModeType.AUTO
 
             resultFromSession[0] == 1 && resultFromInterceptedSession[0] == 1
         } catch (exception: Exception) {
@@ -90,15 +90,17 @@ class HibernateLoadBalancingSession(
     }
 
     override fun getConnection(): Session {
-        return interceptedSession
+        return interceptedSession!!
     }
 
     @Throws(Exception::class)
     override fun fix() {
-        session.sessionFactory.close()
-        session.close()
-        interceptedSession.sessionFactory.close()
-        interceptedSession.close()
+        if (session == null || interceptedSession == null)
+            connect()
+        session!!.sessionFactory.close()
+        session!!.close()
+        interceptedSession!!.sessionFactory.close()
+        interceptedSession!!.close()
         connect()
         if (isHealthy()){
             commit()
@@ -115,10 +117,10 @@ class HibernateLoadBalancingSession(
         } catch (ignore: IllegalStateException) {
         }
         super.close()
-        session.sessionFactory?.close()
-        session.close()
-        interceptedSession.sessionFactory?.close()
-        interceptedSession.close()
+        session!!.sessionFactory?.close()
+        session!!.close()
+        interceptedSession!!.sessionFactory?.close()
+        interceptedSession!!.close()
     }
 
     private fun connect() {
