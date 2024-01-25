@@ -56,4 +56,19 @@ class HibernateLoadBalancingInterceptor(loadBalancer: LoadBalancer<Session>) :
             throw CallbackException(exception.message)
         }
     }
+    @Throws(CallbackException::class)
+    override fun onLoad(
+        entity: Any?,
+        id: Any?,
+        state: Array<out Any>?,
+        propertyNames: Array<out String>?,
+        types: Array<out Type>?
+    ): Boolean {
+        return try {
+            interceptOnLoad(entity)
+            false
+        } catch (exception: IllegalStateException) {
+            throw CallbackException(exception.message)
+        }
+    }
 }
